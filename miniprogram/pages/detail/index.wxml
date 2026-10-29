@@ -12,6 +12,10 @@
         <text wx:for="{{tags}}" wx:key="*this" class="hero-tag">{{item}}</text>
       </view>
     </view>
+    <!-- 右上角：加入/移出「我的行程」，已加入显示是第几站 -->
+    <view class="hero-trip {{inTrip ? 'on' : ''}}" bindtap="onToggleTrip">
+      {{inTrip ? '✓ 第 ' + tripNo + ' 站' : '＋ 加入行程'}}
+    </view>
   </view>
 
   <view class="body">

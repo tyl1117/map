@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "place-search": "/components/place-search/index"
+  }
+}

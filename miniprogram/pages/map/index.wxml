@@ -40,6 +40,7 @@
         <text class="brand-name">标点地图</text>
         <text class="brand-sub">{{activeName}} · {{markerCount}} 个点</text>
       </view>
+      <view class="search-btn" bindtap="openSearch">🔍</view>
     </view>
 
     <!-- 城市下拉 -->
@@ -79,6 +80,24 @@
     </scroll-view>
   </view>
 
+  <!-- 搜索浮层：可跨城市搜点位，点结果直接加进行程 -->
+  <view class="search-layer" wx:if="{{showSearch}}">
+    <view class="search-backdrop" bindtap="closeSearch"></view>
+    <view class="search-card" style="top: {{statusBarHeight + 8}}px">
+      <place-search
+        id="mapSearch"
+        placeholder="搜索景点、美食、酒店…"
+        auto-focus="{{true}}"
+        bind:change="onSearchChange"
+        bind:focus="onSearchFocus"
+      />
+      <view class="search-foot">
+        <text class="search-foot-text">我的行程已选 {{tripCount}} 个点位</text>
+        <view class="search-foot-btn {{tripCount ? 'on' : ''}}" bindtap="onGoTrip">查看行程 ›</view>
+      </view>
+    </view>
+  </view>
+
   <!-- 城市还没点位时的占位 -->
   <view class="empty" wx:if="{{empty}}">
     <view class="empty-title">{{cityName}}的点位还在采集中</view>
@@ -88,8 +107,14 @@
 
   <view class="locate" bindtap="onLocate">◎</view>
 
-  <!-- 精选路线入口 -->
-  <view class="route-fab" bindtap="onGoRoutes">🧭 精选路线</view>
+  <!-- 左下角入口：我的行程（可排序 / 看行程地图）+ 精选路线 -->
+  <view class="fab-stack">
+    <view class="trip-fab {{tripCount ? 'has' : ''}}" bindtap="onGoTrip">
+      <text class="fab-icon">📋</text>
+      <text>我的行程{{tripCount ? ' ' + tripCount : ''}}</text>
+    </view>
+    <view class="route-fab" bindtap="onGoRoutes">🧭 精选路线</view>
+  </view>
 
   <!-- 底部点位列表：主要入口，比点地图上的小图钉好点 -->
   <scroll-view class="poi-strip" scroll-x enhanced show-scrollbar="{{false}}">
@@ -106,6 +131,12 @@
           <view class="strip-name">{{item.name}}</view>
           <view class="strip-meta">{{item.durationMin}} 分钟</view>
         </view>
+        <!-- 加号：把点位加进「我的行程」，已加入就显示是第几站 -->
+        <view
+          class="strip-add {{item.inTrip ? 'on' : ''}}"
+          data-id="{{item.id}}"
+          catchtap="onToggleTrip"
+        >{{item.inTrip ? item.tripNo : '＋'}}</view>
       </view>
     </view>
   </scroll-view>
@@ -128,6 +159,11 @@
         <view class="sheet-title">{{current.name}}</view>
         <view class="sheet-meta">{{current.categoryName}} · 建议 {{current.durationMin}} 分钟</view>
       </view>
+      <view
+        class="sheet-trip {{current.inTrip ? 'on' : ''}}"
+        data-id="{{current.id}}"
+        catchtap="onToggleTrip"
+      >{{current.inTrip ? '✓ 第 ' + current.tripNo + ' 站' : '＋ 行程'}}</view>
       <view class="sheet-close" catchtap="onCloseCard">×</view>
     </view>
 

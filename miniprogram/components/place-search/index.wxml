@@ -1,0 +1,88 @@
+<view class="ps">
+  <view class="ps-box">
+    <text class="ps-icon">🔍</text>
+    <input
+      class="ps-input"
+      value="{{keyword}}"
+      placeholder="{{placeholder}}"
+      placeholder-class="ps-ph"
+      confirm-type="search"
+      focus="{{autoFocus || focusFlag}}"
+      bindinput="onInput"
+      bindfocus="onFocus"
+      bindblur="onBlur"
+      bindconfirm="onConfirm"
+    />
+    <view class="ps-clear" wx:if="{{hasKeyword}}" catchtap="onClear">✕</view>
+  </view>
+
+  <view class="ps-panel" wx:if="{{hasKeyword}}">
+    <!-- ① 介绍卡片：点某条结果后先看这个，再决定加不加进行程 -->
+    <block wx:if="{{card}}">
+      <view class="ps-cardhead">
+        <view class="ps-back" catchtap="onBackToList">‹ 结果</view>
+        <view class="ps-cardhead-hint">找到了 {{results.length}} 个点位</view>
+      </view>
+
+      <scroll-view class="ps-cardbody" scroll-y enhanced show-scrollbar="{{false}}">
+        <view class="ps-cardhero">
+          <text class="ps-cardemoji">{{card.emoji}}</text>
+          <view class="ps-cardmain">
+            <view class="ps-cardname">{{card.name}}</view>
+            <view class="ps-cardmeta">{{card.cityName}} · {{card.categoryName}} · 建议 {{card.durationMin}} 分钟</view>
+          </view>
+          <view class="ps-cardstate" wx:if="{{card.inTrip}}">第 {{card.tripNo}} 站</view>
+        </view>
+
+        <view class="ps-cardsum">{{card.summary}}</view>
+        <view class="ps-cardintro">{{card.intro}}</view>
+
+        <view class="ps-cardfacts">
+          <view class="ps-fact">
+            <text class="ps-fact-k">开放时间</text>
+            <text class="ps-fact-v">{{card.openTime}}</text>
+          </view>
+          <view class="ps-fact">
+            <text class="ps-fact-k">地址</text>
+            <text class="ps-fact-v">{{card.address}}</text>
+          </view>
+          <view class="ps-fact" wx:if="{{card.tagsText}}">
+            <text class="ps-fact-k">标签</text>
+            <text class="ps-fact-v">{{card.tagsText}}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="ps-cardfoot">
+        <view class="ps-btn ghost" catchtap="onCardDetail">查看详情</view>
+        <view class="ps-btn primary {{card.inTrip ? 'on' : ''}}" catchtap="onCardAdd">
+          {{card.inTrip ? '✓ 已加入 · 第 ' + card.tripNo + ' 站' : '＋ 加入行程'}}
+        </view>
+      </view>
+    </block>
+
+    <!-- ② 结果列表：点一下先看介绍卡片 -->
+    <block wx:else>
+      <view class="ps-hint" wx:if="{{results.length}}">找到 {{results.length}} 个点位 · 点一下看介绍，再决定加不加进行程</view>
+      <view class="ps-hint" wx:else>没有匹配的点位，换个关键词试试（支持城市、分类、标签）</view>
+
+      <scroll-view class="ps-list" scroll-y enhanced show-scrollbar="{{false}}">
+        <view
+          class="ps-row {{item.inTrip ? 'on' : ''}}"
+          wx:for="{{results}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="onOpen"
+        >
+          <text class="ps-emoji">{{item.emoji}}</text>
+          <view class="ps-main">
+            <view class="ps-name">{{item.name}}</view>
+            <view class="ps-meta">{{item.cityName}} · {{item.categoryName}} · 建议 {{item.durationMin}} 分钟</view>
+            <view class="ps-sum">{{item.summary}}</view>
+          </view>
+          <view class="ps-arrow {{item.inTrip ? 'on' : ''}}">{{item.inTrip ? '第 ' + item.tripNo + ' 站' : '›'}}</view>
+        </view>
+      </scroll-view>
+    </block>
+  </view>
+</view>

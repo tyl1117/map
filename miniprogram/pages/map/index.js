@@ -3,6 +3,7 @@ const { CATEGORIES, PLACES, CATEGORY_MAP, CATEGORY_RADIUS } = require('../../dat
 const { CITIES, CITY_MAP } = require('../../data/cities');
 const { HEROES } = require('../../data/photos');
 const { distance, formatDistance } = require('../../utils/geo');
+const { getTrip, toggle: toggleTrip, MAX_STOPS } = require('../../utils/trip');
 
 const MARKER_SIZE = { width: 30, height: 38 };
 const DEFAULT_CITY = 'xiangtan';
@@ -29,6 +30,10 @@ Page({
     current: null,
     showCityPicker: false,
     empty: false,
+    // 我的行程：已选点位数量（角标和入口按钮用）
+    tripCount: 0,
+    // 搜索浮层
+    showSearch: false,
     // 底部详情面板（可上滑展开，小红书那种）
     sheetH: 0,
     sheetY: 0,
@@ -78,6 +83,90 @@ Page({
       }
     }
   },
+
+  /** 每次回到地图都同步一次行程状态（可能在详情页加过点位） */
+  onShow() {
+    this.refreshTrip();
+  },
+
+  /** 把「是否已加入行程 / 第几站」挂到点位对象上，列表和卡片共用 */
+  withTripFlags(list) {
+    const t = getTrip();
+    return (list || []).map((p) => {
+      const no = t.ids.indexOf(p.id);
+      return no >= 0
+        ? { ...p, inTrip: true, tripNo: no + 1 }
+        : { ...p, inTrip: false, tripNo: 0 };
+    });
+  },
+
+  /** 行程数量、底部列表角标、当前卡片按钮一起刷新 */
+  refreshTrip() {
+    const t = getTrip();
+    const data = { tripCount: t.ids.length };
+    if (this.data.places.length) {
+      data.places = this.withTripFlags(this.data.places);
+    }
+    const current = this.data.current;
+    if (current) {
+      const no = t.ids.indexOf(current.id);
+      data.current = no >= 0
+        ? { ...current, inTrip: true, tripNo: no + 1 }
+        : { ...current, inTrip: false, tripNo: 0 };
+    }
+    this.setData(data);
+  },
+
+  /** 底部列表 / 卡片上的「＋」：加入或移出行程 */
+  onToggleTrip(e) {
+    const ds = (e && e.currentTarget && e.currentTarget.dataset) || {};
+    const id = ds.id;
+    if (!id) return;
+    const r = toggleTrip(id);
+    if (r.reason === 'full') {
+      wx.showToast({ title: `行程最多 ${MAX_STOPS} 个点位`, icon: 'none' });
+      return;
+    }
+    this.refreshTrip();
+    wx.showToast({ title: r.added ? '已加入行程' : '已移出行程', icon: 'none' });
+  },
+
+  /** 打开排序 / 行程地图页 */
+  onGoTrip() {
+    if (!this.data.tripCount) {
+      wx.showToast({ title: '先点「＋」挑几个点位', icon: 'none' });
+      return;
+    }
+    wx.navigateTo({ url: '/pages/trip/index' });
+  },
+
+  // ---------- 搜索点位：搜到就能直接加进行程 ----------
+  openSearch() {
+    this.setData(
+      {
+        showSearch: true,
+        showCityPicker: false,
+        current: null,
+        expanded: false,
+        sheetY: this.closedY
+      },
+      () => {
+        this.lastBubbleKey = '';
+        this.applyBubbles();
+      }
+    );
+  },
+
+  closeSearch() {
+    this.setData({ showSearch: false });
+  },
+
+  /** 搜索结果里加了 / 移了点位，地图上的「＋」和左下角数量跟着变 */
+  onSearchChange() {
+    this.refreshTrip();
+  },
+
+  onSearchFocus() {},
 
   /** 当前城市的所有点位 */
   cityPlaces() {
@@ -138,7 +227,7 @@ Page({
     this.lastBubbleKey = '';
     this.setData({
       markers,
-      places: list,
+      places: this.withTripFlags(list),
       activeCategory: categoryKey,
       activeName: categoryKey ? CATEGORY_MAP[categoryKey].name : '全部',
       markerCount: list.length,
@@ -229,6 +318,7 @@ Page({
     const place = this.visiblePlaces && this.visiblePlaces[index];
     if (!place) return;
     const category = CATEGORY_MAP[place.category];
+    const tripNo = getTrip().ids.indexOf(place.id) + 1;
     this.lastMarkerTapAt = Date.now();
     this.setData({
       // 卡片和城市面板互斥，避免两层弹层叠住
@@ -242,7 +332,9 @@ Page({
         radiusText: formatDistance(place.radius || CATEGORY_RADIUS[place.category] || DEFAULT_RADIUS),
         distanceText: this.cachedLocation ? this.distanceLine(place) : '定位中…',
         canCheckin: false,
-        checkedAt: this.readCheckedAt(place.id)
+        checkedAt: this.readCheckedAt(place.id),
+        inTrip: tripNo > 0,
+        tripNo: tripNo > 0 ? tripNo : 0
       }
     });
     this.locateForPlace(place);

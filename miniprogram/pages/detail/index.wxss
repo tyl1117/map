@@ -45,6 +45,26 @@
   font-size: 22rpx;
 }
 
+/* 右上角「加入行程」按钮 */
+.hero-trip {
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  z-index: 2;
+  padding: 12rpx 24rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--red);
+  font-size: 24rpx;
+  font-weight: 600;
+  box-shadow: 0 6rpx 18rpx rgba(29, 28, 25, 0.18);
+}
+
+.hero-trip.on {
+  background: var(--red);
+  color: #fff;
+}
+
 /* ---------- 正文 ---------- */
 .body {
   padding: 32rpx 32rpx 0;

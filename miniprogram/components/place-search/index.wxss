@@ -1,0 +1,281 @@
+.ps {
+  position: relative;
+}
+
+.ps-box {
+  display: flex;
+  align-items: center;
+  height: 76rpx;
+  padding: 0 22rpx;
+  background: var(--card);
+  border: 1rpx solid var(--line);
+  border-radius: 38rpx;
+}
+
+.ps-icon {
+  margin-right: 12rpx;
+  font-size: 24rpx;
+  opacity: 0.55;
+}
+
+.ps-input {
+  flex: 1;
+  min-width: 0;
+  height: 76rpx;
+  line-height: 76rpx;
+  font-size: 26rpx;
+  color: var(--ink);
+}
+
+.ps-ph {
+  font-size: 26rpx;
+  color: #a9a294;
+}
+
+.ps-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44rpx;
+  height: 44rpx;
+  margin-left: 10rpx;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--muted);
+  font-size: 20rpx;
+  flex-shrink: 0;
+}
+
+/* 搜索结果下拉 */
+.ps-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 88rpx;
+  z-index: 30;
+  background: var(--card);
+  border: 1rpx solid var(--line);
+  border-radius: 20rpx;
+  box-shadow: 0 16rpx 40rpx rgba(29, 28, 25, 0.18);
+  overflow: hidden;
+}
+
+.ps-hint {
+  padding: 16rpx 22rpx 10rpx;
+  font-size: 20rpx;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.ps-list {
+  max-height: 400rpx;
+}
+
+.ps-row {
+  display: flex;
+  align-items: center;
+  padding: 18rpx 22rpx;
+  border-top: 1rpx solid var(--line);
+}
+
+.ps-row.on {
+  background: #fdf6f2;
+}
+
+.ps-emoji {
+  margin-right: 16rpx;
+  font-size: 32rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.ps-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.ps-name {
+  font-size: 27rpx;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ps-meta {
+  margin-top: 2rpx;
+  font-size: 19rpx;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ps-sum {
+  margin-top: 4rpx;
+  font-size: 19rpx;
+  line-height: 1.4;
+  color: #8a8378;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ps-arrow {
+  margin-left: 16rpx;
+  font-size: 26rpx;
+  line-height: 1;
+  color: #b8b1a4;
+  flex-shrink: 0;
+}
+
+.ps-arrow.on {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: var(--red);
+  color: #fff;
+  font-size: 19rpx;
+  font-weight: 600;
+}
+
+/* ---------- 介绍卡片 ---------- */
+.ps-cardhead {
+  display: flex;
+  align-items: center;
+  padding: 14rpx 20rpx 10rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+
+.ps-back {
+  padding: 4rpx 12rpx 4rpx 0;
+  font-size: 23rpx;
+  font-weight: 600;
+  color: var(--red);
+}
+
+.ps-cardhead-hint {
+  flex: 1;
+  text-align: right;
+  font-size: 19rpx;
+  color: var(--muted);
+}
+
+.ps-cardbody {
+  max-height: 430rpx;
+}
+
+.ps-cardhero {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 22rpx 0;
+}
+
+.ps-cardemoji {
+  margin-right: 16rpx;
+  font-size: 46rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.ps-cardmain {
+  flex: 1;
+  min-width: 0;
+}
+
+.ps-cardname {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.ps-cardmeta {
+  margin-top: 4rpx;
+  font-size: 19rpx;
+  color: var(--muted);
+}
+
+.ps-cardstate {
+  margin-left: 12rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: var(--red);
+  color: #fff;
+  font-size: 19rpx;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ps-cardsum {
+  padding: 14rpx 22rpx 0;
+  font-size: 22rpx;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.ps-cardintro {
+  padding: 8rpx 22rpx 0;
+  font-size: 21rpx;
+  line-height: 1.65;
+  color: #5f5a50;
+}
+
+.ps-cardfacts {
+  padding: 12rpx 22rpx 18rpx;
+}
+
+.ps-fact {
+  display: flex;
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  line-height: 1.5;
+}
+
+.ps-fact-k {
+  width: 120rpx;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+.ps-fact-v {
+  flex: 1;
+  min-width: 0;
+  color: var(--ink-2);
+}
+
+.ps-cardfoot {
+  display: flex;
+  padding: 16rpx 20rpx;
+  border-top: 1rpx solid var(--line);
+  background: #fdfaf4;
+}
+
+.ps-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 68rpx;
+  border-radius: 34rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.ps-btn.ghost {
+  margin-right: 14rpx;
+  background: #fff;
+  border: 1rpx solid var(--line);
+  color: var(--ink-2);
+}
+
+.ps-btn.primary {
+  background: var(--red);
+  color: #fff;
+}
+
+.ps-btn.primary.on {
+  background: var(--teal);
+}

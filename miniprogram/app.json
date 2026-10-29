@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/map/index",
+    "pages/trip/index",
     "pages/routes/index",
     "pages/detail/index"
   ],

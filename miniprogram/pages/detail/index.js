@@ -1,6 +1,7 @@
 const { PLACES, CATEGORY_MAP, CATEGORY_RADIUS } = require('../../data/places');
 const { distance, formatDistance } = require('../../utils/geo');
 const { HEROES } = require('../../data/photos');
+const { getTrip, toggle: toggleTrip } = require('../../utils/trip');
 
 const DEFAULT_RADIUS = 500; // 兜底：点位没配、分类也没配时用
 const keyOf = (id) => 'checkin_' + id;
@@ -18,7 +19,10 @@ Page({
     distanceMeters: -1,
     locationText: '定位中…',
     canCheckin: false,
-    radiusText: ''
+    radiusText: '',
+    // 我的行程：这个点位是否已加入、排第几站
+    inTrip: false,
+    tripNo: 0
   },
 
   onLoad(options) {
@@ -41,7 +45,32 @@ Page({
     });
     wx.setNavigationBarTitle({ title: poi.name });
     this.restoreRecord();
+    this.refreshTrip();
     this.locate();
+  },
+
+  /** 从行程页/地图页回来时同步「加入行程」按钮状态 */
+  onShow() {
+    this.refreshTrip();
+  },
+
+  refreshTrip() {
+    if (!this.data.poi) return;
+    const no = getTrip().ids.indexOf(this.data.poi.id);
+    this.setData({ inTrip: no >= 0, tripNo: no >= 0 ? no + 1 : 0 });
+  },
+
+  /** ＋/✓ 按钮：加入或移出「我的行程」 */
+  onToggleTrip() {
+    const poi = this.data.poi;
+    if (!poi) return;
+    const r = toggleTrip(poi.id);
+    if (r.reason === 'full') {
+      wx.showToast({ title: '行程已经满了（最多 20 个点）', icon: 'none' });
+      return;
+    }
+    this.refreshTrip();
+    wx.showToast({ title: r.added ? '已加入行程' : '已移出行程', icon: 'none' });
   },
 
   /** 读本地打卡记录（兼容早期只存时间戳的格式） */

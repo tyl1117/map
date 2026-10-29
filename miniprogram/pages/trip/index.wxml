@@ -1,0 +1,180 @@
+<view class="page">
+  <!-- 行程地图：编号图钉 + 按交通方式上色的连线 -->
+  <map
+    id="trip-map"
+    class="map"
+    latitude="{{center.latitude}}"
+    longitude="{{center.longitude}}"
+    scale="{{scale}}"
+    markers="{{markers}}"
+    polyline="{{polyline}}"
+    enable-zoom
+    enable-scroll
+    enable-rotate="{{false}}"
+    bindmarkertap="onMarkerTap"
+    bindcallouttap="onCalloutTap"
+    bindtap="onMapTap"
+  />
+
+  <!-- 顶部：返回 + 标题 + 统计 + 隐藏/显示排序 -->
+  <view class="top" style="padding-top: {{statusBarHeight}}px">
+    <view class="top-row">
+      <view class="back" bindtap="onBack">‹</view>
+      <view class="top-main">
+        <view class="top-title">我的行程</view>
+        <view class="top-sub" wx:if="{{summary}}">{{summary.count}} 个点 · 全程约 {{summary.totalText}}</view>
+        <view class="top-sub" wx:else>还没有选点位</view>
+      </view>
+      <view class="panel-toggle" wx:if="{{!empty}}" bindtap="togglePanel">
+        {{panel === 'hidden' ? '显示排序' : '隐藏排序'}}
+      </view>
+    </view>
+
+    <view class="summary-row" wx:if="{{summary}}">
+      <view class="sum-item">
+        <text class="sum-k">点位</text>
+        <text class="sum-v">{{summary.count}} 个</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-k">游玩</text>
+        <text class="sum-v">{{summary.visitText}}</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-k">在途</text>
+        <text class="sum-v">{{summary.travelText}}</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-k">里程</text>
+        <text class="sum-v">{{summary.distanceText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空行程：直接引导回地图挑点位 -->
+  <view class="empty" wx:if="{{empty}}">
+    <view class="empty-emoji">🧺</view>
+    <view class="empty-title">行程还是空的</view>
+    <view class="empty-sub">搜索景点、美食、酒店，点开介绍卡片就能加入</view>
+    <view class="empty-btn" bindtap="onSearchEmpty">🔍 搜索点位</view>
+    <view class="empty-btn ghost" bindtap="onGoMap">去地图挑点位</view>
+  </view>
+
+  <!-- 面板隐藏时露一条底栏，随时可以再展开 -->
+  <view class="hide-bar" wx:if="{{panel === 'hidden' && !empty}}" bindtap="togglePanel">
+    <text class="hide-text">📋 {{summary.count}} 个点 · 在途 {{summary.travelText}}</text>
+    <text class="hide-btn">显示排序列表</text>
+  </view>
+
+  <!-- 排序面板：拖动把手可在 半屏 / 全屏 / 隐藏 之间切换 -->
+  <view
+    class="panel {{draggingPanel ? 'dragging' : ''}}"
+    style="height: {{panelH}}px; transform: translateY({{panelY}}px)"
+  >
+    <view
+      class="grab"
+      bindtouchstart="onGrabStart"
+      bindtouchmove="onGrabMove"
+      bindtouchend="onGrabEnd"
+      bindtap="onPanelTap"
+    >
+      <view class="grab-bar"></view>
+    </view>
+
+    <view class="panel-head">
+      <view class="panel-title">行程排序</view>
+      <view class="panel-actions">
+        <view class="panel-action" bindtap="onGoMap">＋ 加点</view>
+        <view class="panel-action danger" wx:if="{{!empty}}" bindtap="onClear">清空</view>
+      </view>
+    </view>
+    <view class="search-wrap">
+      <place-search
+        id="placeSearch"
+        placeholder="搜索景点、美食、酒店…"
+        bind:change="onSearchChange"
+        bind:focus="onSearchFocus"
+      />
+    </view>
+
+    <view class="panel-hint">上面可搜索景点 / 美食 / 酒店，点开介绍卡片再加；按住 ⠿ 拖动排序，也可以点 ▲ ▼；每段都能切换交通方式</view>
+
+    <view class="drag-hint" wx:if="{{draggingId}}">{{dragHint}}</view>
+
+    <scroll-view
+      class="panel-body"
+      scroll-y
+      enhanced
+      show-scrollbar="{{false}}"
+      scroll-into-view="{{scrollTo}}"
+      scroll-with-animation
+    >
+      <block wx:for="{{rows}}" wx:key="key">
+        <!-- 一个站点 -->
+        <view
+          wx:if="{{item.type === 'stop'}}"
+          id="{{item.rowId}}"
+          class="stop-row {{activeId === item.data.id ? 'active' : ''}} {{draggingId === item.data.id ? 'dragging' : ''}}"
+        >
+          <view
+            class="drag-handle"
+            data-stop="{{item.stopIndex}}"
+            bindtouchstart="onDragStart"
+            catchtouchmove="onDragMove"
+            bindtouchend="onDragEnd"
+            bindtouchcancel="onDragEnd"
+          >⠿</view>
+          <view class="stop-num" style="background: {{item.data.color}}">{{item.stopIndex + 1}}</view>
+          <view class="stop-main" data-stop="{{item.stopIndex}}" bindtap="onStopTap">
+            <view class="stop-name">{{item.data.emoji}} {{item.data.name}}</view>
+            <view class="stop-meta">{{item.data.cityName}} · {{item.data.categoryName}} · 建议 {{item.data.durationMin}} 分钟</view>
+          </view>
+          <view class="stop-ops">
+            <view class="op" data-stop="{{item.stopIndex}}" data-dir="-1" catchtap="onMoveStop">▲</view>
+            <view class="op" data-stop="{{item.stopIndex}}" data-dir="1" catchtap="onMoveStop">▼</view>
+            <view class="op danger" data-id="{{item.data.id}}" catchtap="onRemoveStop">✕</view>
+          </view>
+        </view>
+
+        <!-- 两站之间：三种交通方式的耗时 -->
+        <view wx:else class="leg-row">
+          <view class="leg-rail">
+            <view class="leg-rail-line" style="background: {{item.data.modeColor}}"></view>
+            <view class="leg-rail-dot" style="background: {{item.data.modeColor}}"></view>
+          </view>
+          <view class="leg-card">
+            <view class="leg-top">
+              <text class="leg-title">{{item.data.fromName}} → {{item.data.toName}}</text>
+              <text class="leg-km">{{item.data.distanceText}}</text>
+            </view>
+            <view class="leg-modes">
+              <view
+                wx:for="{{item.data.modes}}"
+                wx:for-item="m"
+                wx:key="key"
+                class="leg-mode {{item.data.modeKey === m.key ? 'on' : ''}}"
+                style="{{item.data.modeKey === m.key ? 'border-color: ' + m.color : ''}}"
+                data-from="{{item.data.fromId}}"
+                data-to="{{item.data.toId}}"
+                data-mode="{{m.key}}"
+                catchtap="onModeTap"
+              >
+                <view class="leg-mode-dot" style="background: {{m.color}}"></view>
+                <view class="leg-mode-body">
+                  <view class="leg-mode-name">
+                    {{m.name}}
+                    <text class="real-tag" wx:if="{{m.real}}">实测</text>
+                  </view>
+                  <view class="leg-mode-time">{{m.text}}</view>
+                </view>
+              </view>
+            </view>
+            <view class="leg-tip" wx:if="{{item.data.estimated}}">按直线距离估算，实际以导航为准</view>
+            <view class="leg-tip warn" wx:if="{{item.data.transitWeak}}">这段很近，坐公交不太划算</view>
+          </view>
+        </view>
+      </block>
+
+      <view class="panel-pad"></view>
+    </scroll-view>
+  </view>
+</view>

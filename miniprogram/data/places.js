@@ -11,7 +11,8 @@ const CATEGORIES = [
   { key: 'oldtown', name: '古镇街区', color: '#8b6f47' },
   { key: 'red', name: '红色', color: '#b0392e' },
   { key: 'school', name: '学府', color: '#3a6ea5' },
-  { key: 'food', name: '美食', color: '#d98324' }
+  { key: 'food', name: '美食', color: '#d98324' },
+  { key: 'hotel', name: '酒店', color: '#6f548f' }
 ];
 
 const PLACES = [
@@ -734,6 +735,108 @@ const PLACES = [
     address: '湘潭市湘乡市书院路',
     openTime: '08:30-17:00',
     durationMin: 60
+  },
+
+  /* ---------------- 酒店（v0.8.0 新增） ----------------
+   * 酒店也是点位：能在地图上显示、能加进行程当「今晚住哪」的一站。
+   * 坐标同样是 GCJ-02 近似值，正式上线前要逐点校准；
+   * durationMin 只算「办理入住 + 放行李」的时间，不含过夜。
+   */
+  {
+    id: 'huayin',
+    name: '湘潭华银国际大酒店',
+    city: 'xiangtan',
+    category: 'hotel',
+    emoji: '🏨',
+    tags: ['高层江景', '市中心'],
+    latitude: 27.8692,
+    longitude: 112.9175,
+    summary: '河西高楼里的江景酒店，下楼就是建设路口',
+    intro: '华银国际是湘潭老牌的高层酒店，面江的房间能看到湘江和万楼方向的夜景，楼下就是建设路口商圈，吃饭、打车都方便。',
+    note: '订房时说清楚要「面江」的房间，不然可能给到城景；周末价差比较明显。',
+    address: '湘潭市雨湖区建设北路 8 号',
+    openTime: '24 小时前台',
+    durationMin: 30
+  },
+  {
+    id: 'panlong',
+    name: '湘潭盘龙山庄大酒店',
+    city: 'xiangtan',
+    category: 'hotel',
+    emoji: '🏨',
+    tags: ['园林度假', '亲子'],
+    latitude: 27.8338,
+    longitude: 112.9436,
+    summary: '带园林和温泉的度假型酒店，适合带小孩',
+    intro: '盘龙山庄在岳塘区，是湘潭少见的度假型酒店，园区里有园林和温泉，房间安静，适合行程排得松的时候住一晚。',
+    note: '离市区景点有点距离，打车约 15 分钟；温泉要另外买票。',
+    address: '湘潭市岳塘区盘龙路 1 号',
+    openTime: '24 小时前台',
+    durationMin: 30
+  },
+  {
+    id: 'niccolo',
+    name: '长沙尼依格罗酒店',
+    city: 'changsha',
+    category: 'hotel',
+    emoji: '🏨',
+    tags: ['高空江景', '地标'],
+    latitude: 28.1932,
+    longitude: 112.9826,
+    summary: '五一广场的高空酒店，落地窗正对湘江和橘子洲',
+    intro: '尼依格罗在长沙 IFS 的高区，房间落地窗能看到湘江和橘子洲，下楼就是五一广场和解放西路，逛吃都方便。',
+    note: '高层房型价格高，想拍夜景就选「江景房」；节假日要早点订。',
+    address: '长沙市芙蓉区解放西路 188 号',
+    openTime: '24 小时前台',
+    durationMin: 30
+  },
+  {
+    id: 'junyue',
+    name: '长沙君悦酒店',
+    city: 'changsha',
+    category: 'hotel',
+    emoji: '🏨',
+    tags: ['江景', '美食圈'],
+    latitude: 28.1908,
+    longitude: 112.9754,
+    summary: '坡子街旁的江景酒店，走两步就是太平街',
+    intro: '君悦在湘江东岸，离坡子街、太平街都是步行距离，房间能看到湘江，晚上从酒店走回老街吃夜宵特别方便。',
+    note: '低层可能被前面的楼挡，订房时备注要高楼层；周末自助餐人多。',
+    address: '长沙市天心区湘江中路 36 号',
+    openTime: '24 小时前台',
+    durationMin: 30
+  },
+  {
+    id: 'hilton',
+    name: '株洲大汉希尔顿酒店',
+    city: 'zhuzhou',
+    category: 'hotel',
+    emoji: '🏨',
+    tags: ['商务', '江景'],
+    latitude: 27.8341,
+    longitude: 113.1252,
+    summary: '天元区的商务酒店，高层能看湘江',
+    intro: '大汉希尔顿在株洲天元区，离神农城和湘江都不远，是株洲比较标准的商务酒店，早餐和健身房都齐全。',
+    note: '打车到石峰公园约 20 分钟；碰到会展房价会涨。',
+    address: '株洲市天元区天台路 399 号',
+    openTime: '24 小时前台',
+    durationMin: 30
+  },
+  {
+    id: 'huatian',
+    name: '株洲华天大酒店',
+    city: 'zhuzhou',
+    category: 'hotel',
+    emoji: '🏨',
+    tags: ['老牌', '市中心'],
+    latitude: 27.8303,
+    longitude: 113.1331,
+    summary: '芦淞区老牌酒店，逛街吃饭都方便',
+    intro: '华天大酒店在芦淞区市中心，旁边就是芦淞市场和商圈，去火车站、石峰公园都顺路，房间偏传统但干净。',
+    note: '老楼新楼价差大，订之前确认是哪一栋。',
+    address: '株洲市芦淞区建设中路 68 号',
+    openTime: '24 小时前台',
+    durationMin: 30
   }
 ];
 
@@ -746,7 +849,8 @@ const CATEGORY_RADIUS = {
   oldtown: 800,  // 古镇/街区：成片区域
   red: 1200,     // 红色景区：韶山冲这种大片区
   school: 1500,  // 学府：校园太大，从南门走到北门就一公里
-  food: 300      // 美食：到店门口
+  food: 300,     // 美食：到店门口
+  hotel: 300     // 酒店：到门口，大堂就算到
 };
 
 const CATEGORY_MAP = CATEGORIES.reduce((map, item) => {

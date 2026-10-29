@@ -116,6 +116,79 @@
   border-top: 1rpx solid var(--line);
 }
 
+/* ---------- 搜索 ---------- */
+.search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  margin-left: 12rpx;
+  border-radius: 50%;
+  background: #f2ece0;
+  border: 1rpx solid var(--line);
+  font-size: 26rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.search-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+}
+
+.search-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(29, 28, 25, 0.34);
+}
+
+.search-card {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  padding: 18rpx 18rpx 14rpx;
+  background: var(--card);
+  border-radius: 24rpx;
+  box-shadow: 0 18rpx 52rpx rgba(29, 28, 25, 0.24);
+}
+
+.search-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14rpx;
+  padding: 0 6rpx;
+}
+
+.search-foot-text {
+  font-size: 21rpx;
+  color: var(--muted);
+}
+
+.search-foot-btn {
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  font-size: 21rpx;
+}
+
+.search-foot-btn.on {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  font-weight: 600;
+}
+
 /* ---------- 空城市占位 ---------- */
 .empty {
   position: absolute;
@@ -155,7 +228,9 @@
 
 .brand {
   display: flex;
+  flex: 1;
   flex-direction: column;
+  min-width: 0;
 }
 
 .brand-name {
@@ -221,12 +296,21 @@
   box-shadow: 0 8rpx 20rpx rgba(29, 28, 25, 0.12);
 }
 
-/* ---------- 精选路线入口 ---------- */
-.route-fab {
+/* ---------- 左下角入口：我的行程 + 精选路线 ---------- */
+.fab-stack {
   position: absolute;
   left: 32rpx;
   bottom: 500rpx;
-  z-index: 10;
+  z-index: 16;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.route-fab,
+.trip-fab {
+  display: flex;
+  align-items: center;
   padding: 14rpx 26rpx;
   border-radius: 999rpx;
   background: #fffdf8;
@@ -235,6 +319,22 @@
   font-size: 23rpx;
   font-weight: 600;
   box-shadow: 0 8rpx 20rpx rgba(29, 28, 25, 0.12);
+}
+
+.trip-fab {
+  margin-bottom: 14rpx;
+  border-color: var(--red);
+}
+
+/* 已经挑了点位：按钮变实心红，顺带当角标 */
+.trip-fab.has {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+.fab-icon {
+  margin-right: 8rpx;
 }
 
 /* ---------- 底部点位列表 ---------- */
@@ -259,15 +359,40 @@
 }
 
 .strip-card {
+  position: relative;
   display: flex;
   align-items: center;
   width: 300rpx;
   margin-right: 16rpx;
-  padding: 16rpx 18rpx;
+  padding: 16rpx 56rpx 16rpx 18rpx;
   background: #fffdf8;
   border: 1rpx solid var(--line);
   border-radius: 18rpx;
   box-shadow: 0 4rpx 12rpx rgba(29, 28, 25, 0.06);
+}
+
+/* 加号：加入行程；已加入则显示第几站 */
+.strip-add {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  width: 46rpx;
+  height: 46rpx;
+  border-radius: 50%;
+  background: #f4ecdf;
+  border: 1rpx solid var(--line);
+  color: var(--red);
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 42rpx;
+  text-align: center;
+}
+
+.strip-add.on {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  font-size: 22rpx;
 }
 
 .strip-card.active {
@@ -377,6 +502,24 @@
   margin-top: 4rpx;
   font-size: 22rpx;
   color: var(--muted);
+}
+
+.sheet-trip {
+  flex-shrink: 0;
+  margin-right: 10rpx;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid var(--red);
+  color: var(--red);
+  font-size: 22rpx;
+  font-weight: 600;
+  background: #fff;
+}
+
+.sheet-trip.on {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
 }
 
 .sheet-close {
